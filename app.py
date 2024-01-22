@@ -8,8 +8,6 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 from datetime import datetime
-import geopandas as gpd
-from shapely.geometry import Polygon
 import warnings
 import json
 from koboextractor import KoboExtractor
