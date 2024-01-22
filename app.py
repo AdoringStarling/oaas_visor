@@ -244,7 +244,7 @@ columns_code_seg=['Seg_Alerta/C_digo_nico_de_Ale_igina_el_seguimiento',
 'Alerta/calculation_001']
 
 app = Dash(__name__)
-
+server=app.server
 # assume you have a "long-form" data frame
 # see https://plotly.com/python/px-arguments/ for more options
 
