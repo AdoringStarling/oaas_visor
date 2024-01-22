@@ -1,0 +1,377 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+.rc-slider-mark-text {
+  font-size: 10px;
+  font-size: 'Poppins';
+}
+
+.tooltip-inner {
+  max-width: 200px;
+  color: #fff;
+  text-align: start;
+  background-color: #4cb286;
+  font-size: 12px;
+  font-family: 'Poppins';
+}
+
+::-webkit-scrollbar {
+    background-color: #1F2132;
+
+    width: 1rem}
+
+::-webkit-scrollbar-thumb {
+    background-color:#fcf9eb
+    
+     
+     !important;
+}
+
+.rc-slider-track {
+    background-color: #4cb286;
+  }
+  
+  .rc-slider-dot-active {  
+    border-color: #4cb286;
+    border: solid 2px #4cb286;
+  }
+  
+  .rc-slider-handle {
+    background-color: #4cb286;
+    border-color: #4cb286;
+  }
+  
+  .rc-slider-handle:hover {
+    border-color: #4cb286;
+  }
+  
+  .rc-slider-handle-active:active {
+    border-color: #4cb286;
+  }
+
+::-webkit-scrollbar:horizontal {
+    height: 0;
+    width: 0;
+    display: none;
+  }
+  
+::-webkit-scrollbar-thumb:horizontal {
+    display: none;
+  }
+
+.scrollable-element { scrollbar-width: none; }
+
+#header{
+    background-color: #002c35;
+
+}
+
+#footer{
+    background-color: #002c35;
+    display: flex;
+    flex-direction :column;
+    justify-content: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+div.modal-header {
+  background-color:#002c35;
+}
+
+div.modal-body {
+  background-color:#002c35;
+}
+
+.pretty_container {
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* border-radius: 5px;
+    background-color: #094958;
+    margin: 2px;
+    padding: 10px;
+    position: relative;
+    box-shadow: 2px 2px 2px lightgray; */
+  }
+
+body {
+    overflow-x: hidden;
+    background-color:#094958;
+    color:#fcf9eb;
+    font-family: 'Poppins', sans-serif;
+   
+}	
+
+div.card.bg-dark {
+    background-color:#094958;
+}
+
+.card-body {
+    
+    background-color:#094958;
+   
+}
+
+.card-title {
+
+    color: #fcf9eb;
+}
+
+.dash-debug-menu {
+    background-color: #4cb286;
+}
+
+h2.card-text {
+
+    font-weight: bold;
+
+}
+
+h2.card-title {
+
+    font-weight: bold;
+    color:#fcf9eb
+
+}
+
+h3.card-title {
+    font-weight: bold;
+}
+.DateInput_input {
+    font-size: 18px;
+    height: 20px;
+    
+  }
+
+.probando-cambios-dev{
+
+  stroke: aqua;
+  
+}
+/* .Select-menu-outer {
+    font-size: 12px;
+}  */
+
+
+/* .CalendarDay{
+    Height: 30px;
+    width: 5px;
+    z-index: 3 ;
+
+}
+
+.CalendarMonth_caption{
+     Height: 30px;
+     width: 20px;
+     z-index: 3 ;
+
+} */
+/* .DayPicker_transitionContainer.DayPicker_transitionContainer_1.DayPicker_transitionContainer__horizontal.DayPicker_transitionContainer__horizontal_2 {
+    font-size: 8px;
+} */
+
+.sidebar {
+
+  position: absolute;
+  left: 0;
+  width: 28rem;
+  height: 50%;
+  z-index: 1;
+  width:20%;
+  transition: all 0.5s;
+  padding: 0.5rem 0.2rem;
+  margin-left: 0.5rem;
+  
+  /* height: 32rem; */
+  /*overflow: scroll;*/
+  height: 700px;
+ 
+
+
+}
+
+.sidebar_hidden {
+  position: fixed;
+  width: 35rem;
+  left: -37rem;
+  transition: all 0.5s;
+  z-index: 1;
+}
+
+.two_fig {
+
+    position: absolute;
+    left: 0;
+    width: 50rem;
+    height: 100%;
+    z-index: 1;
+    
+    transition: all 0.5s;
+    padding: 0.2rem 0.2rem;
+    margin-left: 0.5rem;
+    height: 32rem;
+  }
+
+.two_fig_2  {
+/*width: 100% -10rem;*/
+margin-left: 50rem;
+z-index: 1;
+padding: 0.2rem 0.2rem;
+transition: margin-left .5s;
+overflow: auto;
+}
+.content_sidebar_hidden {
+  
+  transition: margin-left 0.5s;
+  
+}
+
+.others {
+  margin-left: 0.5rem;
+}
+
+.model_graph  {
+  width: 40%;
+  margin-left: 20%;
+  z-index: 1;
+  /* transition: margin-left .5s; */
+  overflow: auto;
+  height: 700px;
+}
+
+
+.model_table  {
+  width: 35%;
+  /* margin-left: 4rem; */
+  z-index: 1;
+  /* transition: margin-left .5s; */
+  overflow: auto;
+  height: 700px;
+  padding: 0.5rem 0.2rem;
+  /* height: 100%; */
+}
+
+#btn_sidebar {
+  margin-bottom: 0.5rem;
+  font-size: 20px;
+  /* margin-left: 1rem; */
+  width: 100%;
+}
+
+/* .button_sidebar {
+  display: flex;
+} */
+
+.dash-graph {
+  margin-right: 5rem;
+}
+
+#logos-image {
+
+  height: auto;
+  width: 50%;
+  margin: 0 auto;
+}
+
+.dash-graph {
+  margin-right: 1rem;
+  margin-left: 1rem;
+}
+@media (max-width: 550px){
+  .btn-info {
+    background-color: #4cb286;
+  }
+  .btn-outline-info {
+    background-color: #4cb286;
+    color: white;
+  }
+  #footer{
+    background-color: #002c35;
+    display: flex;
+    flex-direction: column;
+    
+  }
+
+  .btn-title-row {
+
+  display: flex;
+  flex-direction: column;
+
+  }
+
+  .me-1 {
+    background-color: #4cb286;
+    color: #fcf9eb;
+  }
+
+}
+
+.helpButtons{
+  margin: 0 auto;
+  display: inline-flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 60px;
+}
+
+
+.btn-title-row {
+
+  display: flex;
+  flex-direction: row;
+
+}
+
+a{
+  color :#4cb286;
+}
+
+.model-title{
+
+  text-align: center;
+  font-weight: bold;
+  margin-right: 30px;
+}
+
+.header {
+  display: flex;
+  padding: 15px;
+  align-items: center;
+}
+
+.logo-CdT {
+  height: 130px;
+  width: auto;
+
+  margin-right: auto;
+}
+
+.footerButtons {
+  background-color: #4cb286;
+  color: #fcf9eb;
+  border-radius: 20px;
+  width: 30%;
+}
+
+@media (max-width: 800px) {
+  .header {
+    flex-direction: column;
+    justify-content: center;
+  }
+  .logo-CdT {
+    margin: 0 auto;
+  }
+  .model-title {
+    margin-right: 0;
+  }
+  #logos-image {
+    height: auto;
+    width: 80%;
+    margin: 0 auto;
+  }
+}
+
+/* #loading-1 {
+  background-color: #002c35;
+  background: url(https://saaeuyncprdblob.blob.core.windows.net/drupal-blob/UNAL/Imagenes/Dash/Modelo3D/assets/MicrosoftTeams-image.png);
+  background-repeat: repeat;
+} */
