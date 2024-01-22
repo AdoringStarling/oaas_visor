@@ -16,7 +16,7 @@ import dash_bootstrap_components as dbc
 warnings.simplefilter(action='ignore', category=FutureWarning)
 pd.options.mode.chained_assignment = None 
 
-MUN_COD=pd.read_csv('aux1\MUN_COD.txt',delimiter='\t')
+MUN_COD=pd.read_csv('MUN_COD.txt',delimiter='\t')
 # df1 = pd.read_csv('05_12_2023_11_26\Actores_05_12_2023_11_26.csv')
 # df2 = pd.read_csv('05_12_2023_11_26\Conflicto_05_12_2023_11_26.csv')
 # df3 = pd.read_csv('05_12_2023_11_26\Mesas_05_12_2023_11_26.csv')
@@ -87,7 +87,7 @@ df2['Localizacion/municipio']=df2['Localizacion/municipio'].astype('int')
 dep=KEY_LOC[-33:-1]
 mun=KEY_LOC[0:-33]
 
-mun_loc=pd.read_csv(r'C:\Users\jujim\Documents\OAAS\aux1\mun_loc.csv',skiprows=5,delimiter=';',decimal=',')
+mun_loc=pd.read_csv('mun_loc.csv',skiprows=5,delimiter=';',decimal=',')
 dict_lat_mun={}
 dict_lon_mun={}
 cc=0
