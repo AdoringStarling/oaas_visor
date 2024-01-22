@@ -4,3 +4,4 @@ pandas==2.1.0
 numpy==1.25.2
 koboextractor==0.2.1
 dash-bootstrap-components==1.5.0
+gunicorn
