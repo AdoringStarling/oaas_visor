@@ -862,7 +862,7 @@ app.layout = html.Div(children=[
     html.Div([
                 html.Div(
                     [     
-    dbc.Button("¿Qué es el laboratiorio socioabiental de la OAAS?", color="#4cb286",id="function_but_xl",className="me-1", n_clicks=0),
+    dbc.Button("¿Qué es el Observatorio de la Oficina de Asuntos Sociales y Ambientales?", color="#4cb286",id="function_but_xl",className="me-1", n_clicks=0),
     dbc.Button("¿Como funciona el visor?",color="#4cb286", id="semaforo_but_xl",size="sm", className="me-1", n_clicks=0),
     dbc.Button("Referencias",color="#4cb286", id="references_but_xl",size="sm", className="me-1", n_clicks=0)
     # html.Button("¿Cómo funciona?", id="function_but_xl",  className="footerButtons", n_clicks=0),
