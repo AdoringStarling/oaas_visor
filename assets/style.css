@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
 
 .rc-slider-mark-text {
   font-size: 10px;
-  font-size: 'Poppins';
+  font-size: 'Nunito Sans';
 }
 
 .tooltip-inner {
@@ -11,7 +12,7 @@
   text-align: start;
   background-color: #4cb286;
   font-size: 12px;
-  font-family: 'Poppins';
+  font-family: 'Nunito Sans';
 }
 
 ::-webkit-scrollbar {
@@ -61,7 +62,8 @@
 .scrollable-element { scrollbar-width: none; }
 
 #header{
-    background-color: #002c35;
+    background-color: #edb600;
+    height: 140px;
 
 }
 
@@ -95,9 +97,9 @@ div.modal-body {
 
 body {
     overflow-x: hidden;
-    background-color:#094958;
+    background-color:#ebcc67;
     color:#fcf9eb;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
    
 }	
 
@@ -180,7 +182,7 @@ h3.card-title {
   transition: all 0.5s;
   padding: 0.5rem 0.2rem;
   margin-left: 0.5rem;
-  
+  color: black;
   /* height: 32rem; */
   /*overflow: scroll;*/
   height: 700px;
@@ -201,7 +203,7 @@ h3.card-title {
 
     position: absolute;
     left: 0;
-    width: 50rem;
+    width: 40%;
     height: 100%;
     z-index: 1;
     
@@ -213,7 +215,7 @@ h3.card-title {
 
 .two_fig_2  {
 /*width: 100% -10rem;*/
-margin-left: 50rem;
+margin-left: 40%;
 z-index: 1;
 padding: 0.2rem 0.2rem;
 transition: margin-left .5s;
@@ -329,22 +331,43 @@ a{
 
   text-align: center;
   font-weight: bold;
-  margin-right: 30px;
 }
 
 .header {
   display: flex;
-  padding: 15px;
+  padding: 3%;
   align-items: center;
+  width: 100%;
 }
 
-.logo-CdT {
-  height: 130px;
+.logo-vida {
+  height: 120px;
   width: auto;
+  margin-left: 1%;
+  margin-right: 2%;
 
-  margin-right: auto;
+  justify-content: center;
 }
 
+.logo-energia {
+  position: absolute;
+  left:70%;
+  height: 120px;
+  width: auto;
+  margin-left: 2%;
+  margin-right: 1%;
+  justify-content: center;
+}
+
+.logo-oaas {
+  position: absolute;
+  left:60%;
+  height: 150px;
+  width: auto;
+  margin-left: 2%;
+  margin-right: 1%;
+  justify-content: center;
+}
 .footerButtons {
   background-color: #4cb286;
   color: #fcf9eb;
@@ -357,11 +380,17 @@ a{
     flex-direction: column;
     justify-content: center;
   }
-  .logo-CdT {
+  .logo-vida {
+    margin: 0 auto;
+  }
+  .logo-energia {
     margin: 0 auto;
   }
   .model-title {
+    position: absolute;
+    /* left:50%; */
     margin-right: 0;
+
   }
   #logos-image {
     height: auto;

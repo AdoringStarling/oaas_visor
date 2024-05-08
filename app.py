@@ -1,7 +1,6 @@
 # Run this app with `python app.py` and
 # visit http://127.0.0.1:8050/ in your web browser.
 
-
 from dash import Dash, dcc, html, Input, Output, callback,dash_table, State
 import plotly.express as px
 import pandas as pd
@@ -12,32 +11,126 @@ import warnings
 import json
 from koboextractor import KoboExtractor
 import dash_bootstrap_components as dbc
+import time
+
+colorlist=[
+'#3366CC',
+'#DC3912',
+'#FF9900',
+'#109618',
+'#990099',
+'#0099C6',
+'#DD4477',
+'#66AA00',
+'#B82E2E',
+'#316395',
+  '#636EFA',
+ '#EF553B',
+ '#00CC96',
+ '#AB63FA',
+ '#FFA15A',
+ '#19D3F3',
+ '#FF6692',
+ '#B6E880',
+ '#FF97FF',
+ '#FECB52',
+ 'rgb(251,180,174)',
+ 'rgb(179,205,227)',
+ 'rgb(204,235,197)',
+ 'rgb(222,203,228)',
+ 'rgb(254,217,166)',
+ 'rgb(255,255,204)',
+ 'rgb(229,216,189)',
+ 'rgb(253,218,236)',
+ 'rgb(242,242,242)',
+ 'rgb(179,226,205)',
+ 'rgb(253,205,172)',
+ 'rgb(203,213,232)',
+ 'rgb(244,202,228)',
+ 'rgb(230,245,201)',
+ 'rgb(255,242,174)',
+ 'rgb(241,226,204)',
+ 'rgb(204,204,204)',
+'rgb(141,211,199)',
+ 'rgb(255,255,179)',
+ 'rgb(190,186,218)',
+ 'rgb(251,128,114)',
+ 'rgb(128,177,211)',
+ 'rgb(253,180,98)',
+ 'rgb(179,222,105)',
+ 'rgb(252,205,229)',
+ 'rgb(217,217,217)',
+ 'rgb(188,128,189)',
+ 'rgb(204,235,197)',
+ 'rgb(255,237,111)',
+'rgb(136, 204, 238)',
+ 'rgb(204, 102, 119)',
+ 'rgb(221, 204, 119)',
+ 'rgb(17, 119, 51)',
+ 'rgb(51, 34, 136)',
+ 'rgb(170, 68, 153)',
+ 'rgb(68, 170, 153)',
+ 'rgb(153, 153, 51)',
+ 'rgb(136, 34, 85)',
+ 'rgb(102, 17, 0)',
+ 'rgb(136, 136, 136)'
+ ]
+
+config_map = {
+  'toImageButtonOptions': {
+    'format': 'png', # one of png, svg, jpeg, webp
+    'filename': 'OAAS_mapa_conflictos',
+    'height': 1080,
+    'width': 1080,
+    'scale': 1 # Multiply title/legend/axis/canvas sizes by this factor
+  }
+}
+config_bar = {
+  'toImageButtonOptions': {
+    'format': 'png', # one of png, svg, jpeg, webp
+    'filename': 'OAAS_hist_conflictos',
+    'height': 1080,
+    'width': 1780,
+    'scale': 1 # Multiply title/legend/axis/canvas sizes by this factor
+  }
+}
+config_pie = {
+  'toImageButtonOptions': {
+    'format': 'png', # one of png, svg, jpeg, webp
+    'filename': 'OAAS_tarta_conflictos',
+    'height': 2160,
+    'width': 2160,
+    'scale': 1 # Multiply title/legend/axis/canvas sizes by this factor
+  }
+}
+
+note = 'NYSE Trading Days After Announcement<br>Source:<a href="https://www.nytimes.com/"">The NY TIMES</a> Data: <a href="https://www.yahoofinance.com/">Yahoo! Finance</a>'
+
 # Suppress FutureWarning messages
 warnings.simplefilter(action='ignore', category=FutureWarning)
 pd.options.mode.chained_assignment = None 
 
-MUN_COD=pd.read_csv('MUN_COD.txt',delimiter='\t')
-# df1 = pd.read_csv('05_12_2023_11_26\Actores_05_12_2023_11_26.csv')
-# df2 = pd.read_csv('05_12_2023_11_26\Conflicto_05_12_2023_11_26.csv')
-# df3 = pd.read_csv('05_12_2023_11_26\Mesas_05_12_2023_11_26.csv')
+MUN_COD=pd.read_csv('aux1\MUN_COD.txt',delimiter='\t')
 
+#KoboT start
 token = '3d81f96d16fbc8adc419e90fd5e5684bc58445ff'
 kobot = KoboExtractor(token, 'https://kf.kobotoolbox.org/api/v2')
 form_id = 'aJThss9cZcGfrUrm7rqcYa'
-    # nombre = tp_fichas[l]
 datt = kobot.get_data(form_id, query=None, start=None, limit=None, submitted_after=None)
-df2 = pd.json_normalize(datt['results'])
+#KoboT end
 
+#Replace start
+replace=pd.read_excel('aux1/aJThss9cZcGfrUrm7rqcYa.xlsx',sheet_name='choices') #Palabras de reemplazo
+replace_1=replace[np.isin(replace['list_name'],replace['list_name'].unique()[0:5])]# Palabras de reemplazo iniciales
+values=replace['label'].values
+values_1=replace_1['label'].values
+replace_dict = dict(zip(replace['name'].values, [values for values in values]))
+replace_dict_1 = dict(zip(replace_1['name'].values, [values_1 for values_1 in values_1]))
+#Replace end
+
+df2 = pd.json_normalize(datt['results'])
 MUN_dict=MUN_COD[['Identificacion/municipio','Municipio']].set_index('Identificacion/municipio').to_dict()['Municipio']
 DEP_dict=MUN_COD[['Identificacion/municipio','Departamento']].set_index('Identificacion/municipio').to_dict()['Departamento']
-
-# df2['Localizacion/municipio']=df2['Localizacion/municipio'].astype('int')
-
-# df2['Municipio']=df2['Localizacion/municipio'].astype('int').map(MUN_dict)
-# df2['Departamento']=df2['Localizacion/municipio'].astype('int').map(DEP_dict)
-# for i,col in zip([df1,df2,df3],['Identificacion/municipio','Localizacion/municipio','group_ke65b09/Municipio']):
-#     i['Municipio']=i[col].map(MUN_dict)
-#     i['Departamento']=i[col].map(DEP_dict)
 
 KEY_LOC=[]
 VAL_LOC=[]
@@ -52,19 +145,23 @@ for key,value in zip(KEY_LOC,VAL_LOC):
     LOC[key]=value
 
 
+    
 dftime=df2[np.isin(df2['Inicio/Tipo_de_Reporte'],['registro_inicio','alerta_temprana','otros_reportes_actividades'])]
 dfsegcierr=df2[np.isin(df2['Inicio/Tipo_de_Reporte'],['cierre','seguimiento_conflictividad','seguimiento_AT'])]
 dftime['Municipio']=dftime['Localizacion/municipio'].astype('int').map(MUN_dict)
 dftime['Departamento']=dftime['Localizacion/municipio'].astype('int').map(DEP_dict)
 ls_all=[]
-for _id,cocal,coalt,init,zon,dep,mun,munc in zip(dftime['_id'],
+for _id,cocal,coalt,init,zon,dep,mun,munc,sub1,sub2,sub3 in zip(dftime['_id'],
                     dftime['Conflicto/Codificaciones/calculation'],
                     dftime['Alerta/calculation_001'],
                     dftime['Inicio/Fecha_de_ocurrencia_del_evento'],
                     dftime['Localizacion/zona'],
                     dftime['Departamento'],
                     dftime['Municipio'],
-                    dftime['Localizacion/municipio']
+                    dftime['Localizacion/municipio'],
+                    dftime['Conflicto/Subsector'],
+                    dftime['Alerta/Subsector_generador_de_la_Aler'],
+                    dftime['group_rl63j77/Subsector_generador_de_la_Aler']
                     ):
     fil=[np.any(coinc) for coinc in np.isin(dfsegcierr[['Seg_Alerta/C_digo_nico_de_Ale_igina_el_seguimiento',
                                             'Cierre/C_digo_nico_de_Regi_e_la_Alerta_Temprana',
@@ -77,17 +174,33 @@ for _id,cocal,coalt,init,zon,dep,mun,munc in zip(dftime['_id'],
     dftime_fil['Departamento']=dep
     dftime_fil['Localizacion/zona']=zon
     dftime_fil['Localizacion/municipio']=munc
+    dftime_fil['sub1']=sub1
+    dftime_fil['sub2']=sub2
+    dftime_fil['sub3']=sub3
     if len(dftime_fil)>0:
         ls_all.append(dftime_fil)
 df_all=pd.concat(ls_all)
 df2=pd.concat([df_all,dftime])
-
 df2['Localizacion/municipio']=df2['Localizacion/municipio'].astype('int')
-
-dep=KEY_LOC[-33:-1]
+dep=KEY_LOC[-33::]
 mun=KEY_LOC[0:-33]
+dict_dep={}
+for i in ['Amazonas ','Vaupes ','Guainia ','Guaviare ','Putumayo ','Caqueta ']:
+    dict_dep[i]='Zona Amazonia'
+for i in ['Choco ','Valle ','Cauca ','Nariño ']:
+    dict_dep[i]='Zona Pacifico'
+for i in ['Arauca ','Vichada ','Casanare ','Meta ']:
+    dict_dep[i]='Zona Orinoquia'
+for i in ['La Guajira ','Magdalena ','Cesar ','Atlantico ','Bolivar ','Sucre ','Cordoba ','San Andres ']:
+    dict_dep[i]='Zona Caribe'
+andina=res = [i for i in dep if i not in list(dict_dep.keys())]
 
-mun_loc=pd.read_csv('mun_loc.csv',skiprows=5,delimiter=';',decimal=',')
+for i in andina:
+    dict_dep[i]='Zona Andina'
+df2['Localizacion/zona']=dftime['Departamento'].map(dict_dep)
+df2=df2.replace(replace_dict_1)
+
+mun_loc=pd.read_csv(r'C:\Users\jujim\Documents\OAAS\aux1\mun_loc.csv',skiprows=5,delimiter=';',decimal=',')
 dict_lat_mun={}
 dict_lon_mun={}
 cc=0
@@ -228,11 +341,22 @@ columns_space=[
 'Alerta/Afectaciones_y_o_impactos_en_o',
 'Alerta/Principales_actores_involucrad_001',
 'Alerta/Indique_cu_les_son_las_fuentes_002',
+
 'Conflicto/Segmento_Afectado_Hidrocarburos',
+
+'Conflicto/Segmento_Afectado_Miner_a',
+'Conflicto/Segmento_Afectado_Energ_a',
+'Conflicto/Escala_del_Proyecto',
+
 'Conflicto/Carac/Principales_actores_involucrad',
 'Conflicto/Carac/Afectaciones/Tipo_de_Acciones',
 'Conflicto/Carac/Afectaciones/Indique_cu_les_son_las_fuentes',
-'Conflicto/Carac/Actuaciones/Categor_as_de_acciones_realiza'
+'Conflicto/Carac/Actuaciones/Categor_as_de_acciones_realiza',
+
+'Alerta/Segmento_posiblemente_afectado', #Hidrocarburos
+'Alerta/Segmento_posiblemente_afectado_001', #Mineria
+'Alerta/Segmento_posiblemente_afectado_energ_a', #Energia
+'Alerta/Escala_del_Proyecto_001', #Escala del proyecto
 ]
 columns_code_seg=['Seg_Alerta/C_digo_nico_de_Ale_igina_el_seguimiento',
 'Cierre/C_digo_nico_de_Regi_e_la_Alerta_Temprana',
@@ -241,8 +365,59 @@ columns_code_seg=['Seg_Alerta/C_digo_nico_de_Ale_igina_el_seguimiento',
 'Conflicto/Codificaciones/calculation',
 'Alerta/calculation_001']
 
+draft_template = go.layout.Template()
+draft_template.layout.annotations = [
+    dict(
+        name='Name',
+        text="No se registran datos para",
+        textangle=-15,
+        opacity=0.1,
+        font=dict(color="black", size=30),
+        xref="paper",
+        yref="paper",
+        x=0.5,
+        y=0.5,
+        showarrow=False,
+    )
+]
+
+draft_OAAS = go.layout.Template()
+draft_OAAS.layout.annotations = [
+    dict(
+        name='Name',
+        text="Ministerio de Minas y Energía",
+        textangle=-15,
+        opacity=0.1,
+        font=dict(color="black", size=55),
+        xref="paper",
+        yref="paper",
+        x=0.5,
+        y=0.5,
+        showarrow=False,
+    )
+]
+
+def bar_all(filter_ubi2,df21,filter_ubi,column,i):
+    if filter_ubi2=='Ninguno':
+        dfbar=df21[[filter_ubi,column]].value_counts().reset_index()
+    else:
+        dfbar=df21[[filter_ubi,column,filter_ubi2]].value_counts().reset_index()
+    if len(dfbar!=0):
+        if filter_ubi2=='Ninguno':
+            fig = px.bar(dfbar, x=filter_ubi, y="count", color=column, title="Conflictos en "+i,labels={"count": "Conteo"})
+            fig.update_layout( showlegend=True,legend_title=None)
+        else:
+            fig = px.bar(dfbar, x=filter_ubi, y="count", color=column, title="Conflictos en "+i,pattern_shape=filter_ubi2)
+        fig.update_layout(template=draft_OAAS)
+    else:
+        fig=px.scatter()
+        draft_template.layout.annotations[0].text="No se registran datos para "+column
+        fig.update_layout(template=draft_template)
+    return fig
+        
+
 app = Dash(__name__)
-server=app.server
+
 # assume you have a "long-form" data frame
 # see https://plotly.com/python/px-arguments/ for more options
 
@@ -259,6 +434,16 @@ card_main=html.Div([
         [],
         multi=True,
         id='dep_id',
+        style={'color': 'black'}
+    ),
+    html.H5(children='''
+        Gerencias
+    '''),
+    dcc.Dropdown(
+        ['Zona Amazonia','Zona Pacifico','Zona Orinoquia','Zona Caribe','Zona Andina'],
+        [],
+        multi=True,
+        id='ger_id',
         style={'color': 'black'}
     ),
     html.H5(children='''
@@ -294,15 +479,27 @@ card_main=html.Div([
         style={'color': 'black'}
     ),
     html.H5(children='''
-        Simbolo
+        Subsector
     '''),
     dcc.Dropdown(
-        ['Departamento','Localizacion/zona','Ninguno'],
-        'Ninguno',
-        multi=False,
-        id='shape_id',
+        ['General','Hidrocarburos','Energía','Minería'],
+        ['General'],
+        multi=True,
+        id='subsector_id',
         style={'color': 'black'}
-    ),
+    )
+    ,
+    # html.H5(children='''
+    #     Simbolo
+    # '''),
+    # dcc.Dropdown(
+    #     ['Departamento','Localizacion/zona','Ninguno'],
+    #     'Ninguno',
+    #     multi=False,
+    #     id='shape_id',
+    #     style={'color': 'black'}
+    # )
+    # ,
     html.H5(children='''
         Filtro Linea de Tiempo
     '''),
@@ -329,105 +526,178 @@ card_main=html.Div([
 card_graph=dcc.Graph(
         id='geo2',
         figure={},
+        config=config_map
     ),
 
 
 tables=html.Div([
-    html.H5('Tabla de Geoinformación (oprime un elemento en el mapa)'),
+    html.H5('Tabla de Geoinformación (oprime un elemento en el mapa)',style={'color':'black'}),
     html.Div([
         html.H5('Conflictos'),
-        dash_table.DataTable(style_table={
-            # 'maxHeight': 600,
-            'overflowY': 'auto',
-            'overflowX': 'scroll'
-                                           } ,id='tbl_confc',
-                             style_cell={
-        'textAlign': 'left',
-        'backgroundColor': 'rgb(30, 30, 30)',
-        'color': 'white',
-        'font-family':"Poppins",
-        "whiteSpace": "pre-line",
-                                        },),
+        dash_table.DataTable(fixed_rows={'headers': True},
+                             style_table={
+                                            'overflowY': 'scroll',
+                                            'overflowX': 'scroll',
+                                            'maxWidth':'95%',
+                                        } ,id='tbl_confc',
+                            style_cell={              
+                                            'textAlign': 'left',
+                                            'backgroundColor': 'rgb(30, 30, 30)',
+                                            'color': 'white',
+                                            'font-family':'Nunito Sans',
+                                            'font-size': '13px',
+                                            "whiteSpace": "pre-line",
+                                            'maxWidth': '280px',
+                                            'minWidth': '100px',},
+                            style_header={
+                                'backgroundColor': '#edb600',
+                                'fontWeight': 'bold',
+                                'color': 'black',
+                            },
+                            style_data={
+                                'color': 'black',
+                                'backgroundColor': '#DDD0B4'
+                            }),
         ],id='confc_block',style= {'display': 'none'},),
     #Alertas -----------------------------------------
     html.Div([
         html.H5('Alertas Tempranas'),
-        dash_table.DataTable(style_table={
-            # 'maxHeight': 600,
-            'overflowY': 'auto',
-            'overflowX': 'scroll'
-                                           } ,id='tbl_alerta',
-                             style_cell={
-        'textAlign': 'left',
-        'backgroundColor': 'rgb(30, 30, 30)',
-        'color': 'white',
-        'font-family':"Poppins",
-        "whiteSpace": "pre-line",
-                                        },),
+        dash_table.DataTable(fixed_rows={'headers': True},
+                             style_table={
+                                            'overflowY': 'scroll',
+                                            'overflowX': 'scroll',
+                                            'maxWidth':'95%',
+                                        } ,id='tbl_alerta',
+                            style_cell={              
+                                            'textAlign': 'left',
+                                            'backgroundColor': 'rgb(30, 30, 30)',
+                                            'color': 'white',
+                                            'font-family':'Nunito Sans',
+                                            'font-size': '13px',
+                                            "whiteSpace": "pre-line",
+                                            'maxWidth': '280px',
+                                            'minWidth': '100px',},
+                            style_header={
+                                'backgroundColor': '#edb600',
+                                'fontWeight': 'bold',
+                                'color': 'black',
+                            },
+                            style_data={
+                                'color': 'black',
+                                'backgroundColor': '#DDD0B4'
+                            }),
         ],id='alerta_block',style= {'display': 'none'}),
     #Seguimiento Conflictos -----------------------------------------
     html.Div([
         html.H5('Seguimiento conflictos'),
-        dash_table.DataTable(style_table={
-            # 'maxHeight': 600,
-            'overflowY': 'auto',
-            'overflowX': 'scroll'
-                                           } ,id='tbl_sconfc',
-                             style_cell={
-        'textAlign': 'left',
-        'backgroundColor': 'rgb(30, 30, 30)',
-        'color': 'white',
-        'font-family':"Poppins",
-        "whiteSpace": "pre-line",
-                                        },),
+        dash_table.DataTable(fixed_rows={'headers': True},
+                             style_table={
+                                            'overflowY': 'scroll',
+                                            'overflowX': 'scroll',
+                                            'maxWidth':'95%',
+                                        } ,id='tbl_sconfc',
+                            style_cell={              
+                                            'textAlign': 'left',
+                                            'backgroundColor': 'rgb(30, 30, 30)',
+                                            'color': 'white',
+                                            'font-family':'Nunito Sans',
+                                            'font-size': '13px',
+                                            "whiteSpace": "pre-line",
+                                            'maxWidth': '280px',
+                                            'minWidth': '100px',},
+                            style_header={
+                                'backgroundColor': '#edb600',
+                                'fontWeight': 'bold',
+                                'color': 'black',
+                            },
+                            style_data={
+                                'color': 'black',
+                                'backgroundColor': '#DDD0B4'
+                            }),
         ],id='sconfc_block',style= {'display': 'none'}),
     #Seguimiento Alertas-----------------------------------------
     html.Div([
         html.H5('Seguimiento Alertas'),
-        dash_table.DataTable(style_table={
-            # 'maxHeight': 600,
-            'overflowY': 'auto',
-            'overflowX': 'scroll'
-                                           } ,id='tbl_salerta',
-                             style_cell={
-        'textAlign': 'left',
-        'backgroundColor': 'rgb(30, 30, 30)',
-        'color': 'white',
-        'font-family':"Poppins",
-        "whiteSpace": "pre-line",
-                                        },),
+        dash_table.DataTable(fixed_rows={'headers': True},
+                             style_table={
+                                            'overflowY': 'scroll',
+                                            'overflowX': 'scroll',
+                                            'maxWidth':'95%',
+                                        } ,id='tbl_salerta',
+                            style_cell={              
+                                            'textAlign': 'left',
+                                            'backgroundColor': 'rgb(30, 30, 30)',
+                                            'color': 'white',
+                                            'font-family':'Nunito Sans',
+                                            'font-size': '13px',
+                                            "whiteSpace": "pre-line",
+                                            'maxWidth': '280px',
+                                            'minWidth': '100px',},
+                            style_header={
+                                'backgroundColor': '#edb600',
+                                'fontWeight': 'bold',
+                                'color': 'black',
+                            },
+                            style_data={
+                                'color': 'black',
+                                'backgroundColor': '#DDD0B4'
+                            }),
         ],id='salerta_block',style= {'display': 'none'}),
     #Seguimiento Alertas-----------------------------------------
     html.Div([
         html.H5('Cierres'),
-        dash_table.DataTable(style_table={
-            # 'maxHeight': 600,
-            'overflowY': 'auto',
-            'overflowX': 'scroll'
-                                           } ,id='tbl_cierr',
-                             style_cell={
-        'textAlign': 'left',
-        'backgroundColor': 'rgb(30, 30, 30)',
-        'color': 'white',
-        'font-family':"Poppins",
-        "whiteSpace": "pre-line",
-                                        },),
+        dash_table.DataTable(fixed_rows={'headers': True},
+                             style_table={
+                                            'overflowY': 'scroll',
+                                            'overflowX': 'scroll',
+                                            'maxWidth':'95%',
+                                        } ,id='tbl_cierr',
+                            style_cell={              
+                                            'textAlign': 'left',
+                                            'backgroundColor': 'rgb(30, 30, 30)',
+                                            'color': 'white',
+                                            'font-family':'Nunito Sans',
+                                            'font-size': '13px',
+                                            "whiteSpace": "pre-line",
+                                            'maxWidth': '280px',
+                                            'minWidth': '100px',},
+                            style_header={
+                                'backgroundColor': '#edb600',
+                                'fontWeight': 'bold',
+                                'color': 'black',
+                            },
+                            style_data={
+                                'color': 'black',
+                                'backgroundColor': '#DDD0B4'
+                            }),
         ],id='cierr_block',style= {'display': 'none'}),
     #Otros-----------------------------------------
     html.Div([
         html.H5('Otros'),
-        dash_table.DataTable(style_table={
-            # 'maxHeight': 600,
-            'overflowY': 'auto',
-            'overflowX': 'scroll'
-                                           } ,id='tbl_otro',
-                             style_cell={
-        'textAlign': 'left',
-        'backgroundColor': 'rgb(30, 30, 30)',
-        'color': 'white',
-        'font-family':"Poppins",
-        "whiteSpace": "pre-line",
-                                        },),
+        dash_table.DataTable(fixed_rows={'headers': True},
+                             style_table={
+                                            'overflowY': 'scroll',
+                                            'overflowX': 'scroll',
+                                            'maxWidth':'95%',
+                                        } ,id='tbl_otro',
+                            style_cell={              
+                                            'textAlign': 'left',
+                                            'backgroundColor': 'rgb(30, 30, 30)',
+                                            'color': 'white',
+                                            'font-family':'Nunito Sans',
+                                            'font-size': '13px',
+                                            "whiteSpace": "pre-line",
+                                            'maxWidth': '280px',
+                                            'minWidth': '100px',},
+                            style_header={
+                                'backgroundColor': '#edb600',
+                                'fontWeight': 'bold',
+                                'color': 'black',
+                            },
+                            style_data={
+                                'color': 'black',
+                                'backgroundColor': '#DDD0B4'
+                            }),
         ],id='otro_block',style= {'display': 'none'}),
     ]) #style_table={'maxHeight': 600} ,
 
@@ -510,17 +780,37 @@ app.layout = html.Div(children=[
 
             [    
                 html.Img(
-                    src="assets\OAAS_cut.png",
+                    src="assets\gobierno.png",
                     id="plotly-image",
-                    className="logo-CdT"
+                    className="logo-vida"
                 ),                   
+                 html.Div([
+                html.H4(
 
-                html.H3(
-
-                    "BETA Visor de datos conflictos - Observatorio de la Oficina de Asuntos Sociales y Ambientales",
+                    "Visor de datos de conflictos mineroenergéticos",
+                    style={'color':'black'},
                     className="model-title"
 
                     # style={"margin-bottom": "0px", 'textAlign': 'center','font-weight':'bold'},
+                ),
+                html.H6(
+
+                    "Observatorio de la Oficina de Asuntos Ambientales y Sociales",
+                    style={'color':'black'},
+                    
+
+                    # style={"margin-bottom": "0px", 'textAlign': 'center','font-weight':'bold'},
+                )
+                ],className="model-title"), 
+                html.Img(
+                    src="assets\OAAS_cut.png",
+                    id="plotly-image3",
+                    className="logo-oaas"
+                ), 
+                html.Img(
+                    src="assets\ENERGÍA@4x.png",
+                    id="plotly-image1",
+                    className="logo-energia"
                 ), 
 
             ], className="header", id='header'
@@ -534,7 +824,8 @@ app.layout = html.Div(children=[
                 id="loading-1",
                 type="cube",
                 fullscreen=True,
-                style={'background-color': '#002c35',
+                color='#DDD0B4',
+                style={'background-color': '#edb600',
                        'background-image': 'assets\OAAS_cut.png',
                        'opacity':'1', 
                        'background-repeat': 'space',
@@ -568,11 +859,12 @@ app.layout = html.Div(children=[
         ),
     # card_main,
     # tables,
-    html.H2(children='Datos Generales'),
+    html.H2(children='Datos Generales',style={'color':'black'}),
     dcc.Graph(
         id='fig1',
         figure={},
-        className='others'
+        className='others',
+        config=config_bar
     ),
     # dcc.Graph(
     #     id='geo1',
@@ -580,23 +872,72 @@ app.layout = html.Div(children=[
     # ),
     #html.H1(id='click-data'),#, style=styles['pre']),
     #Fin condicional ------------------------------
-    html.H2(children='Conflictos'),
+    html.H2(children='Conflictos',style={'color':'black'}),
     dcc.Graph(
         id='fig2',
         figure={}
     ),
+    #Segmento Hidrocarburos
     html.Div([
         html.Div([
         dcc.Graph(
             id='fig9',
             figure={},
+            config=config_pie
         )],className='two_fig'),
         html.Div([
         dcc.Graph(
             id='fig_C_segh',
             figure={},
+            
         )],className='two_fig_2')]
              ,className='row flex-display'),
+#Segmento Mineria
+    html.Div([
+        html.Div([
+        dcc.Graph(
+            id='figmin',
+            figure={},
+            config=config_pie
+        )],className='two_fig'),
+        html.Div([
+        dcc.Graph(
+            id='figminbar',
+            figure={},
+            
+        )],className='two_fig_2')]
+             ,className='row flex-display'),
+#Segmento Energía
+    html.Div([
+        html.Div([
+        dcc.Graph(
+            id='figeng',
+            figure={},
+            config=config_pie
+        )],className='two_fig'),
+        html.Div([
+        dcc.Graph(
+            id='figengbar',
+            figure={},
+            
+        )],className='two_fig_2')]
+             ,className='row flex-display'),
+#Escala de proyecto
+    html.Div([
+        html.Div([
+        dcc.Graph(
+            id='figesc',
+            figure={},
+            config=config_pie
+        )],className='two_fig'),
+        html.Div([
+        dcc.Graph(
+            id='figescbar',
+            figure={},
+            
+        )],className='two_fig_2')]
+             ,className='row flex-display'),
+# Otrossmdoajdnajkd
     html.Div([
         html.Div([
         dcc.Graph(
@@ -761,7 +1102,7 @@ app.layout = html.Div(children=[
         id='fig14',
         figure={}
     ),
-    html.H2(children='Alertas'),
+    html.H2(children='Alertas',style={'color':'black'}),
     dcc.Graph(
         id='fig_A_Subsector',
         figure={}
@@ -770,10 +1111,10 @@ app.layout = html.Div(children=[
         id='fig3',
         figure={}
     ),
-    dcc.Graph(
-        id='fig4',
-        figure={}
-    ),
+    # dcc.Graph(
+    #     id='fig4',
+    #     figure={}
+    # ),
     html.Div([
         html.Div([
         dcc.Graph(
@@ -846,6 +1187,58 @@ app.layout = html.Div(children=[
             figure={},
         )],className='two_fig_2')]
              ,className='row flex-display'),
+    
+# Nuevos subsectores
+    html.Div([
+        html.Div([
+        dcc.Graph(
+            id='fighidal',
+            figure={},
+        )],className='two_fig'),
+        html.Div([
+        dcc.Graph(
+            id='fighidalbar',
+            figure={},
+        )],className='two_fig_2')]
+             ,className='row flex-display'),
+    html.Div([
+        html.Div([
+        dcc.Graph(
+            id='figminal',
+            figure={},
+        )],className='two_fig'),
+        html.Div([
+        dcc.Graph(
+            id='figminalbar',
+            figure={},
+        )],className='two_fig_2')]
+             ,className='row flex-display'),
+
+    html.Div([
+        html.Div([
+        dcc.Graph(
+            id='figengal',
+            figure={},
+        )],className='two_fig'),
+        html.Div([
+        dcc.Graph(
+            id='figengalbar',
+            figure={},
+        )],className='two_fig_2')]
+             ,className='row flex-display'),
+
+    html.Div([
+        html.Div([
+        dcc.Graph(
+            id='figescal',
+            figure={},
+        )],className='two_fig'),
+        html.Div([
+        dcc.Graph(
+            id='figescalbar',
+            figure={},
+        )],className='two_fig_2')]
+             ,className='row flex-display'),
     # dcc.Graph(
     #     id='fig8',
     #     figure={}
@@ -862,7 +1255,7 @@ app.layout = html.Div(children=[
     html.Div([
                 html.Div(
                     [     
-    dbc.Button("¿Qué es el Observatorio de la Oficina de Asuntos Sociales y Ambientales?", color="#4cb286",id="function_but_xl",className="me-1", n_clicks=0),
+    dbc.Button("¿Qué es el laboratiorio socioabiental de la OAAS?", color="#4cb286",id="function_but_xl",className="me-1", n_clicks=0),
     dbc.Button("¿Como funciona el visor?",color="#4cb286", id="semaforo_but_xl",size="sm", className="me-1", n_clicks=0),
     dbc.Button("Referencias",color="#4cb286", id="references_but_xl",size="sm", className="me-1", n_clicks=0)
     # html.Button("¿Cómo funciona?", id="function_but_xl",  className="footerButtons", n_clicks=0),
@@ -946,13 +1339,18 @@ app.callback(
     [Output(component_id='fig1', component_property='figure'),
      Output(component_id='fig2', component_property='figure'),
      Output(component_id='fig3', component_property='figure'),
-     Output(component_id='fig4', component_property='figure'),
+     
      Output(component_id='fig5', component_property='figure'),
      Output(component_id='fig6', component_property='figure'),
      Output(component_id='fig7', component_property='figure'),
      Output(component_id='fig8', component_property='figure'),
      Output(component_id='fig9', component_property='figure'),
      Output(component_id='fig10', component_property='figure'),
+     
+     Output(component_id='figmin', component_property='figure'),
+     Output(component_id='figeng', component_property='figure'),
+     Output(component_id='figesc', component_property='figure'),
+     
      Output(component_id='fig11', component_property='figure'),
      Output(component_id='fig12', component_property='figure'),
      Output(component_id='fig13', component_property='figure'),
@@ -966,6 +1364,11 @@ app.callback(
      Output(component_id='fig_A_Subsector', component_property='figure'),
      #Espacios por ubi
      Output(component_id='fig_C_segh', component_property='figure'),
+     
+     Output(component_id='figminbar', component_property='figure'),
+     Output(component_id='figengbar', component_property='figure'),
+     Output(component_id='figescbar', component_property='figure'),
+     
      Output(component_id='fig_C_act', component_property='figure'),
      Output(component_id='fig_C_acc', component_property='figure'),
      Output(component_id='fig_C_info', component_property='figure'),
@@ -978,17 +1381,29 @@ app.callback(
      Output(component_id='fig_dimsoc_ubi', component_property='figure'),
      Output(component_id='fig_dimeco_ubi', component_property='figure'),
      Output(component_id='fig_dimam_ubi', component_property='figure'),
+     
+    Output(component_id='fighidal', component_property='figure'),
+    Output(component_id='figminal', component_property='figure'),
+    Output(component_id='figengal', component_property='figure'),
+    Output(component_id='figescal', component_property='figure'),
+    Output(component_id='fighidalbar', component_property='figure'),
+    Output(component_id='figminalbar', component_property='figure'),
+    Output(component_id='figengalbar', component_property='figure'),
+    Output(component_id='figescalbar', component_property='figure'),
+    Output(component_id="loading-output-1", component_property='children'),
+    
      ],
     [Input('submit-val', 'n_clicks'),
      State(component_id='dep_id', component_property='value'),
+     State(component_id='ger_id', component_property='value'),
      State(component_id='count_id', component_property='value'),
-     State(component_id='shape_id', component_property='value'),
+     State(component_id='subsector_id', component_property='value'),
      State(component_id='time_id', component_property='value'),
      State(component_id='DATE', component_property='start_date'),
      State(component_id='DATE', component_property='end_date'),]
 )
-def update_output_div(act,list_dep,filter_ubi,filter_ubi2,strfil,START_DATE,END_DATE):
-    
+def update_output_div(act,list_dep,list_ger,filter_ubi,subsector_filt,strfil,START_DATE,END_DATE):
+    filter_ubi2='Ninguno'
     # list_dep=[dep[0:5]]
     # list_mun=[]
     # list_mun=[]
@@ -996,118 +1411,110 @@ def update_output_div(act,list_dep,filter_ubi,filter_ubi2,strfil,START_DATE,END_
     # filter_ubi='Municipio'
     # filter_ubi2='Localizacion/zona'
     if len(list_dep)==0:
-        list_dep.append('COLOMBIA')
-
+        if len(list_ger)==0:
+            list_dep.append('COLOMBIA')
+        else:
+            pass
     if np.any(np.isin(list_dep,'COLOMBIA')):
         #df11=df1.copy()
         df21=df2.copy()
         #df31=df3.copy()
         i='COLOMBIA'
     else:
-        if len(list_dep)==0:
-            dep_fil=['']
-        else:
-            dep_fil=[LOC[dpt] for dpt in list_dep]
-        #df11=df1[np.isin(df1['Departamento'],dep_fil)]
-        df21=df2[np.isin(df2['Departamento'],dep_fil)]
-        #df31=df3[np.isin(df3['Departamento'],dep_fil)]
-        i='departamentos y municipios de consulta'
-    df21=df21[(df2['FECHA - HORA UTC']<=END_DATE)&(df2['FECHA - HORA UTC']>=START_DATE)]
-    # if len(df11)!=0:
-    #     # #print('Actores')
-    #     # #print(df11['_id'].unique())
-    #     pass
-    if len(df21)!=0:
-        # filter_ubi='Departamento'
-        #print('Conflictos')
-        #print(df21['_id'].unique())
-        dfbar=df21[[filter_ubi,'Inicio/Tipo_de_Reporte']].value_counts().reset_index()
-        # Datos Generales --------------------------------
-        if len(dfbar!=0):
-            fig1 = px.bar(dfbar, x=filter_ubi, y="count", color='Inicio/Tipo_de_Reporte', title="Tipos de Reporte de conflictividad en "+i)
-        else:
-            fig1 = {}
-        # Conflictos --------------------------------
-        if filter_ubi2=='Ninguno':
-            dfbar=df21[[filter_ubi,'Conflicto/Subsector']].value_counts().reset_index()
-        else:
-            dfbar=df21[[filter_ubi,'Conflicto/Subsector',filter_ubi2]].value_counts().reset_index()
-        if len(dfbar!=0):
-            if filter_ubi2=='Ninguno':
-                fig2 = px.bar(dfbar, x=filter_ubi, y="count", color='Conflicto/Subsector', title="Conflictos en "+i)
+        if len(list_ger)==0:
+            if len(list_dep)==0:
+                dep_fil=['']
             else:
-                fig2 = px.bar(dfbar, x=filter_ubi, y="count", color='Conflicto/Subsector', title="Conflictos en "+i,pattern_shape=filter_ubi2)
+                dep_fil=[LOC[dpt] for dpt in list_dep]
+            df21=df2[np.isin(df2['Departamento'],dep_fil)]
+            i='departamentos y municipios de consulta'
         else:
-            fig2 = {}
+            # dep_fil=[LOC[dpt] for dpt in list_dep]
+            df21=df2[np.isin(df2['Localizacion/zona'],list_ger)]
+            i=str(list_ger)
+    #df21[['Conflicto/Subsector','Alerta/Subsector_generador_de_la_Aler','group_rl63j77/Subsector_generador_de_la_Aler','sub1','sub2','sub']] = df21[['Conflicto/Subsector','Alerta/Subsector_generador_de_la_Aler','group_rl63j77/Subsector_generador_de_la_Aler']].fillna(np.nan)
+    #subsector_filt.append(np.nan)
+    if np.any(np.isin(subsector_filt,'General')):
+        pass
+    else:
+        df21=df21[(np.isin(df21['Conflicto/Subsector'],subsector_filt))|
+                (np.isin(df21['Alerta/Subsector_generador_de_la_Aler'],subsector_filt))|
+                (np.isin(df21['sub1'],subsector_filt))|
+                (np.isin(df21['sub2'],subsector_filt))|
+                (np.isin(df21['sub3'],subsector_filt))
+                #(np.isin(df21['Otro/Subsector_00'],subsector_filt))|
+                #(np.isin(df21['group_js6nn51/Subsector_001'],subsector_filt))
+                ]
+    df21=df21[(df21['FECHA - HORA UTC']<=END_DATE)&(df21['FECHA - HORA UTC']>=START_DATE)]
+    if len(df21)!=0:
+        # Datos Generales --------------------------------
+        fig1=bar_all(filter_ubi2,df21,filter_ubi,'Inicio/Tipo_de_Reporte',i)
+        # Conflictos --------------------------------
+        fig2=bar_all(filter_ubi2,df21,filter_ubi,'Conflicto/Subsector',i)
         # Alertas --------------------------------
-        dfbar=df21[[filter_ubi,'Alerta/Subsector_generador_de_la_Aler']].value_counts().reset_index()
-        draft_template = go.layout.Template()
-        draft_template.layout.annotations = [
-            dict(
-                name='Name',
-                text="No hay datos",
-                textangle=0,
-                opacity=0.1,
-                font=dict(color="black", size=30),
-                xref="paper",
-                yref="paper",
-                x=0.5,
-                y=0.5,
-                showarrow=False,
-            )
-        ]
-        if len(dfbar)!=0:
-            fig_A_Subsector = px.bar(dfbar, x=filter_ubi, y="count", color='Alerta/Subsector_generador_de_la_Aler', title="Subsector afectado de Alerta Temprana de conflictividad en "+i)
-            #fig.show()
-        else:
-            fig_A_Subsector=px.scatter()
-            draft_template.layout.annotations[0].text="No hay datos para "+'Alerta/Subsector_generador_de_la_Aler'
-            fig_A_Subsector.update_layout(template=draft_template)
-            # fig_A_Subsector={}
-        dfbar=df21[[filter_ubi,'Alerta/Tipo_de_Alerta_Temprana']].value_counts().reset_index()
-        if len(dfbar)!=0:
-            fig3 = px.bar(dfbar, x=filter_ubi, y="count", color='Alerta/Tipo_de_Alerta_Temprana', title="Tipos de Alerta Temprana de conflictividad en "+i)
-            #fig.show()
-        else:
-            fig3=px.scatter()
-            draft_template.layout.annotations[0].text="No hay datos para "+'Alerta/Tipo_de_Alerta_Temprana'
-            fig3.update_layout(template=draft_template)
-        dfbar=df21[[filter_ubi,'Alerta/Segmento_posiblemente_afectado']].value_counts().reset_index()
-        if len(dfbar)!=0:
-            fig4 = px.bar(dfbar, x=filter_ubi, y="count", color='Alerta/Segmento_posiblemente_afectado', title="Segmento de Alerta posiblemente afectado en "+i)
-        else:
-            fig4={}
-            #fig.show()
+        fig_A_Subsector=bar_all(filter_ubi2,df21,filter_ubi,'Alerta/Subsector_generador_de_la_Aler',i)
+        fig3=bar_all(filter_ubi2,df21,filter_ubi,'Alerta/Tipo_de_Alerta_Temprana',i)
+        fig4=bar_all(filter_ubi2,df21,filter_ubi,'Alerta/Segmento_posiblemente_afectado',i)
+
         # Espacio ---------------------------
         fig_ls=[]
-        for col,name in zip(columns_space,
-            ["Conductas vulneratorias de "+i,
+        col_ls_discrete=[]
+        name_columns_space=["Conductas vulneratorias de "+i,
             "Afectaciones y_o impacto en "+i,
             "Principales actores involucrados en "+i,
             "Principales fuentes de información en "+i,
-            "Segmento de Hidrocarburso Afectado en "+i,
+            
+            "Segmento de Hidrocarburos Afectado en "+i,
+            "Segmento de Minería Afectado en "+i,
+            "Segmento de Energía Afectado en "+i,
+            "Escala de proyecto (Mineria) "+i,
+            
             "Principales Actores Involucrados en "+i,
             "Tipo de Accion de Conflicto en "+i,
             "Fuentes de Información en "+i,
-            "Categorias de las Acciones en "+i,]):
+            "Categorias de las Acciones en "+i,
+            
+            "Segmento de Hidrocarburos Afectado en "+i, #Hidrocarburos
+            "Segmento de Minería Afectado en "+i, #Energia
+            "Segmento de Energía Afectado en "+i, #Mineria
+            "Escala de proyecto (Mineria) "+i
+            ]
+        for col,name in zip(columns_space,name_columns_space
+            ):
             cd_vul=[]
             for ff in df21[col]:
                 try:
                     cd_vul.extend(ff.split(' '))
                 except:
                     pass
-            unique, counts = np.unique(np.array(cd_vul), return_counts=True)
+            cd_vul_1=[replace_dict[letter] for letter in cd_vul]
+            unique, counts = np.unique(np.array(cd_vul_1), return_counts=True)
+            count_sort_ind = np.argsort(-counts)
+            unique=unique[count_sort_ind]
+            counts=counts[count_sort_ind]
             if len(unique)!=0:
-                fignn=px.pie(names=unique,values= counts, title=name)
-                fignn.update_traces(hoverinfo='label+percent+name', textinfo='none')
+                col_temp={}
+                for key,value in zip(unique,colorlist):
+                    col_temp[key]=value
+                fignn=px.pie(names=unique,values= counts, title=name,color=unique,color_discrete_map=col_temp,labels={"count": "Conteo"})
+                fignn.update_traces(hoverinfo='label+percent+name', textposition='inside', textinfo='percent+label')
+                fignn.update(layout_showlegend=False)
                 fignn.update_layout(
                             legend=dict(font=dict(size=10),itemwidth=30)) # Para leyendas largas se puede simplificar con <br>
+                fignn.update_layout(template=draft_OAAS)
                 fig_ls.append(fignn)
+                col_ls_discrete.append(col_temp)
             else:
-                fig_ls.append({})
+                fignn=px.scatter()
+                draft_template.layout.annotations[0].text="No se registran datos para "+col
+                fignn.update_layout(template=draft_template)
+                fig_ls.append(fignn)
+                col_ls_discrete.append('')
                 #fig.show()
         fig_ls1=[]
-        for col in columns_space:
+
+        for col,name,col_temp in zip(columns_space,name_columns_space,col_ls_discrete
+            ):
             cd_vul=[]
             filter_ubi_ls=[]
             for ff,ubi in zip(df21[col],df21[filter_ubi]):
@@ -1117,22 +1524,55 @@ def update_output_div(act,list_dep,filter_ubi,filter_ubi2,strfil,START_DATE,END_
                     #print(len(ff.split(' ')))
                 except:
                     fign={}
+                cd_vul_1=[replace_dict[letter] for letter in cd_vul]
+                #filter_ubi_ls_1=[replace_dict[letter] for letter in filter_ubi_ls]
             hist_df=pd.DataFrame()
             hist_df[filter_ubi]=filter_ubi_ls
-            hist_df[col]=cd_vul
-            dfbar=hist_df[[filter_ubi,col]].value_counts().reset_index()
-            if len(dfbar)!=0:
-                fign = px.bar(dfbar, x=filter_ubi, y="count", color=col, title=col)
-                fign.update_layout(legend=dict(
-                                font=dict(size= 10),
-                                title_text=''))
-                #fig.show()
+            hist_df[col]=cd_vul_1
+            if filter_ubi2=='Ninguno':
+                col_ls=[filter_ubi,col]
+                dfbar=hist_df[col_ls].value_counts().reset_index()
+                if len(dfbar)!=0:
+                    fign = px.bar(dfbar, x=filter_ubi, y="count", color=col,title=name,color_discrete_map=col_temp,labels={"count": "Conteo"})
+                    fign.update_layout(legend=dict(
+                                    font=dict(size= 10),
+                                    title_text=''))
+                    fign.update_layout(template=draft_OAAS)
+                    #fig.show()
+                else:
+                    fign=px.scatter(title=name)
+                    draft_template.layout.annotations[0].text="No se registran datos para "+col
+                    fign.update_layout(template=draft_template)
             else:
-                fign={}
+                filter_ubi_ls2=[]
+                for ff,ubi in zip(df21[col],df21[filter_ubi2]):
+                    try:
+                        filter_ubi_ls2.extend([str(ubi)]*len(ff.split(' ')))
+                        #print(len(ff.split(' ')))
+                    except:
+                        fign={}
+                hist_df[filter_ubi2]=filter_ubi_ls2
+                col_ls=[filter_ubi,col,filter_ubi2]
+                dfbar=hist_df[col_ls].value_counts().reset_index()
+                if len(dfbar)!=0:
+                    fign = px.bar(dfbar, x=filter_ubi, y="count", color=col, title=name,pattern_shape=filter_ubi2,color_discrete_map=col_temp,labels={"count": "Conteo"})
+                    fign.update_layout(legend=dict(
+                                    font=dict(size= 10),
+                                    orientation="v",
+                                    y=1,
+                                    x=1,
+                                    title_text=''))
+                    fign.update_layout(template=draft_OAAS)
+                    #fig.show()
+                else:
+                    fign=px.scatter(title=name)
+                    draft_template.layout.annotations[0].text="No se registran datos para "+col
+                    fign.update_layout(template=draft_template)
             fig_ls1.append(fign)
     #----------------------------------------------------------
-        dftime=df21[np.isin(df21['Inicio/Tipo_de_Reporte'],['registro_inicio','alerta_temprana','otros_reportes_actividades'])]
-        dfsegcierr=df21[np.isin(df21['Inicio/Tipo_de_Reporte'],['cierre','seguimiento_conflictividad','seguimiento_AT'])]
+
+        dftime=df21[np.isin(df21['Inicio/Tipo_de_Reporte'],['Registro inicial Conflictividad','Registro Alerta Temprana','Otros reportes/actividades'])]
+        dfsegcierr=df21[np.isin(df21['Inicio/Tipo_de_Reporte'],['Cierre','Seguimiento Conflictividad','Seguimiento Alerta Temprana'])]
 
         fig14 = go.Figure()
         hoy = datetime.today().strftime('%Y-%m-%d')
@@ -1161,11 +1601,12 @@ def update_output_div(act,list_dep,filter_ubi,filter_ubi2,strfil,START_DATE,END_
             x=[init]
             y=[_id]
             if len(dftime_fil)!=0:
-                if np.any(np.isin(dftime_fil['Inicio/Tipo_de_Reporte'].unique(),['seguimiento_conflictividad','seguimiento_AT'])):
-                    for i in dftime_fil[(np.isin(dftime_fil['Inicio/Tipo_de_Reporte'],['seguimiento_conflictividad','seguimiento_AT']))]['Inicio/Fecha_de_ocurrencia_del_evento'].sort_values():
+                # print(dftime_fil)
+                if np.any(np.isin(dftime_fil['Inicio/Tipo_de_Reporte'].unique(),['Seguimiento Conflictividad','Seguimiento Alerta Temprana'])):
+                    for i in dftime_fil[(np.isin(dftime_fil['Inicio/Tipo_de_Reporte'],['Seguimiento Conflictividad','Seguimiento Alerta Temprana']))]['Inicio/Fecha_de_ocurrencia_del_evento'].sort_values():
                         x.append(i)
                         y.append(_id)
-                if not np.any(np.isin(dftime_fil['Inicio/Tipo_de_Reporte'].unique(),['cierre'])):
+                if not np.any(np.isin(dftime_fil['Inicio/Tipo_de_Reporte'].unique(),['Cierre'])):
                     x.append(hoy)
                     y.append(_id)
                     fig14.add_trace(go.Scatter(x=x, y=y, name=str(_id),
@@ -1176,8 +1617,8 @@ def update_output_div(act,list_dep,filter_ubi,filter_ubi2,strfil,START_DATE,END_
                                             line_shape='linear',
                                             line_dash='dash',
                                             line_width=0.75,))
-                if np.any(np.isin(dftime_fil['Inicio/Tipo_de_Reporte'].unique(),['cierre'])):
-                    x.append(dftime_fil[dftime_fil['Inicio/Tipo_de_Reporte']=='cierre']['Inicio/Fecha_de_ocurrencia_del_evento'].values[0])
+                if np.any(np.isin(dftime_fil['Inicio/Tipo_de_Reporte'].unique(),['Cierre'])):
+                    x.append(dftime_fil[dftime_fil['Inicio/Tipo_de_Reporte']=='Cierre']['Inicio/Fecha_de_ocurrencia_del_evento'].values[0])
                     y.append(_id)
                     fig14.add_trace(go.Scatter(x=x, y=y, name=str(_id),legendgrouptitle_text=cr,legendgroup=cr,marker_color='red',
                                     line_shape='linear'))
@@ -1198,7 +1639,7 @@ def update_output_div(act,list_dep,filter_ubi,filter_ubi2,strfil,START_DATE,END_
                 # #print(len(nc))
         fig14.update_layout(autosize=True,height=500,
                             margin=dict(l=250, r=250, b=0, t=30),
-                            font_family="Poppins"
+                            font_family='Nunito Sans'
                         )
         fig14.update_yaxes(tickformat="~m") 
         #fig.show()
@@ -1206,6 +1647,7 @@ def update_output_div(act,list_dep,filter_ubi,filter_ubi2,strfil,START_DATE,END_
         soc=[]
         eco=[]
         am=[]
+
         filter_ubi_soc=[]
         filter_ubi_eco=[]
         filter_ubi_am=[]
@@ -1219,9 +1661,11 @@ def update_output_div(act,list_dep,filter_ubi,filter_ubi2,strfil,START_DATE,END_
             filter_ubi_soc.extend([str(ubi)]*len(str(soc1).split(' ')))
             filter_ubi_eco.extend([str(ubi)]*len(str(eco1).split(' ')))
             filter_ubi_am.extend([str(ubi)]*len(str(am1).split(' ')))
+        # print(filter_ubi_am)
         df_soc=pd.DataFrame()
         df_eco=pd.DataFrame()
         df_am=pd.DataFrame()
+            
         for tipo,ubi,dfi,nom in zip([soc,eco,am],
                                 [filter_ubi_soc,filter_ubi_eco,filter_ubi_am],
                                 [df_soc,df_eco,df_am],
@@ -1229,20 +1673,65 @@ def update_output_div(act,list_dep,filter_ubi,filter_ubi2,strfil,START_DATE,END_
             dfi['Tipo']=tipo
             dfi['Ubicacion']=ubi
             dfi['Dimension']=nom
+        # if filter_ubi2=='Ninguno':
         df_soc = df_soc.drop(df_soc[df_soc['Tipo'] == 'nan'].index)
         df_eco = df_eco.drop(df_eco[df_eco['Tipo'] == 'nan'].index)
         df_am = df_am.drop(df_am[df_am['Tipo'] == 'nan'].index)
+        
+        # df_freq=df_freq.replace(replace_dict)
+        df_soc=df_soc.replace(replace_dict)
+        df_eco=df_eco.replace(replace_dict)
+        df_am=df_am.replace(replace_dict)
+        
         df_freq=pd.concat([df_soc,df_eco,df_am])
         fig15 = px.line_polar(df_freq[['Dimension']].value_counts().reset_index(), r="count", theta="Dimension",line_close=True,
                         title="Grafico de cuantificacion dimensional"
                         )
-        fig_dimall_ubi=px.bar(df_freq[['Dimension','Ubicacion']].value_counts().reset_index(), x='Ubicacion', y="count", color='Dimension', title='Grafico de cuantificacion dimensional')
-        fig16=px.pie(df_soc[['Tipo']].value_counts().reset_index(),names='Tipo',values= 'count', title='Social')
-        fig_dimsoc_ubi=px.bar(df_soc[['Tipo','Ubicacion']].value_counts().reset_index(), x='Ubicacion', y="count", color='Tipo', title='Grafico de cuantificacion dimensional social')
-        fig17=px.pie(df_eco[['Tipo']].value_counts().reset_index(),names='Tipo',values= 'count', title='Economica')
-        fig_dimeco_ubi=px.bar(df_eco[['Tipo','Ubicacion']].value_counts().reset_index(), x='Ubicacion', y="count", color='Tipo', title='Grafico de cuantificacion dimensional economico')
-        fig18=px.pie(df_am[['Tipo']].value_counts().reset_index(),names='Tipo',values= 'count', title='Ambiental')
-        fig_dimam_ubi=px.bar(df_am[['Tipo','Ubicacion']].value_counts().reset_index(), x='Ubicacion', y="count", color='Tipo', title='Grafico de cuantificacion dimensional ambiental')
+        fig_dimall_ubi=px.bar(df_freq[['Dimension','Ubicacion']].value_counts().reset_index(), x='Ubicacion', y="count", color='Dimension', title='Grafico de cuantificacion dimensional',labels={"count": "Conteo"})
+        fig16=px.pie(df_soc[['Tipo']].value_counts().reset_index(),names='Tipo',values= 'count', title='Social',labels={"count": "Conteo"})
+        fig16.update_traces(hoverinfo='label+percent+name', textposition='inside', textinfo='percent+label')
+        fig16.update(layout_showlegend=False)
+        fig_dimsoc_ubi=px.bar(df_soc[['Tipo','Ubicacion']].value_counts().reset_index(), x='Ubicacion', y="count", color='Tipo', title='Grafico de cuantificacion dimensional social',labels={"count": "Conteo"})
+        fig17=px.pie(df_eco[['Tipo']].value_counts().reset_index(),names='Tipo',values= 'count', title='Economica',labels={"count": "Conteo"})
+        fig17.update_traces(hoverinfo='label+percent+name', textposition='inside', textinfo='percent+label')
+        fig17.update(layout_showlegend=False)
+        fig_dimeco_ubi=px.bar(df_eco[['Tipo','Ubicacion']].value_counts().reset_index(), x='Ubicacion', y="count", color='Tipo', title='Grafico de cuantificacion dimensional economico',labels={"count": "Conteo"})  
+        fig18=px.pie(df_am[['Tipo']].value_counts().reset_index(),names='Tipo',values= 'count', title='Ambiental',labels={"count": "Conteo"})
+        fig18.update_traces(hoverinfo='label+percent+name', textposition='inside', textinfo='percent+label')
+        fig18.update(layout_showlegend=False)
+        fig_dimam_ubi=px.bar(df_am[['Tipo','Ubicacion']].value_counts().reset_index(), x='Ubicacion', y="count", color='Tipo', title='Grafico de cuantificacion dimensional ambiental',labels={"count": "Conteo"})
+            # fig16.update_layout(legend=dict(font=dict(size=10),itemwidth=30)) 
+            # fig17.update_layout(legend=dict(font=dict(size=10),itemwidth=30)) 
+            # fig18.update_layout(legend=dict(font=dict(size=10),itemwidth=30))         
+        # else:
+        #     filter_ubi_soc2=[]
+        #     filter_ubi_eco2=[]
+        #     filter_ubi_am2=[]
+        #     for soc1,eco1,am1,ubi in zip(df21['Conflicto/Carac/Categor_a_del_conflicto_Dime'],
+        #             df21['Conflicto/Carac/Categor_as_del_conflicto_Dim_001'],
+        #             df21['Conflicto/Carac/Categor_as_del_Conflicto_Dim'],
+        #             df21[filter_ubi2]):
+        #                 filter_ubi_soc2.extend([str(ubi)]*len(str(soc1).split(' ')))
+        #                 filter_ubi_eco2.extend([str(ubi)]*len(str(eco1).split(' ')))
+        #                 filter_ubi_am2.extend([str(ubi)]*len(str(am1).split(' ')))
+        #     df_soc[filter_ubi2]=filter_ubi_soc2
+        #     df_eco[filter_ubi2]=filter_ubi_eco2
+        #     df_am[filter_ubi2]=filter_ubi_am2
+        #     df_soc = df_soc.drop(df_soc[df_soc['Tipo'] == 'nan'].index)
+        #     df_eco = df_eco.drop(df_eco[df_eco['Tipo'] == 'nan'].index)
+        #     df_am = df_am.drop(df_am[df_am['Tipo'] == 'nan'].index)
+            
+        #     df_freq=pd.concat([df_soc,df_eco,df_am])
+        #     fig15 = px.line_polar(df_freq[['Dimension']].value_counts().reset_index(), r="count", theta="Dimension",line_close=True,
+        #                     title="Grafico de cuantificacion dimensional"
+        #                     )
+        #     fig_dimall_ubi=px.bar(df_freq[['Dimension','Ubicacion',filter_ubi2]].value_counts().reset_index(), x='Ubicacion', y="count", color='Dimension', title='Grafico de cuantificacion dimensional',pattern_shape=filter_ubi2)
+        #     fig16=px.pie(df_soc[['Tipo']].value_counts().reset_index(),names='Tipo',values= 'count', title='Social')
+        #     fig_dimsoc_ubi=px.bar(df_soc[['Tipo','Ubicacion',filter_ubi2]].value_counts().reset_index(), x='Ubicacion', y="count", color='Tipo', title='Grafico de cuantificacion dimensional social',pattern_shape=filter_ubi2)
+        #     fig17=px.pie(df_eco[['Tipo']].value_counts().reset_index(),names='Tipo',values= 'count', title='Economica')
+        #     fig_dimeco_ubi=px.bar(df_eco[['Tipo','Ubicacion',filter_ubi2]].value_counts().reset_index(), x='Ubicacion', y="count", color='Tipo', title='Grafico de cuantificacion dimensional economico',pattern_shape=filter_ubi2)
+        #     fig18=px.pie(df_am[['Tipo']].value_counts().reset_index(),names='Tipo',values= 'count', title='Ambiental')
+        #     fig_dimam_ubi=px.bar(df_am[['Tipo','Ubicacion',filter_ubi2]].value_counts().reset_index(), x='Ubicacion', y="count", color='Tipo', title='Grafico de cuantificacion dimensional ambiental',pattern_shape=filter_ubi2)
     # if len(df31)!=0:
     #     pass
     if len(df21)>0:
@@ -1255,7 +1744,7 @@ def update_output_div(act,list_dep,filter_ubi,filter_ubi2,strfil,START_DATE,END_
         scatt=df21[['lat','lon','Municipio','Departamento']].value_counts().reset_index()
         geo2 = px.density_mapbox(heat, lat='latitud', lon='longitud', z='count', radius=25,
                         center=dict(lat=4, lon=-72), zoom=3,
-                        mapbox_style="open-street-map",color_continuous_scale=px.colors.sequential.Jet)
+                        mapbox_style="open-street-map",color_continuous_scale=px.colors.sequential.Jet,labels={"count": "Conteo"})
         # geo1 = px.scatter_mapbox(scatt, lat="lat", lon="lon", color="count", 
         #                 #          size="count",
         #                 #   color_continuous_scale=px.colors.cyclical.IceFire, size_max=15, zoom=10
@@ -1279,7 +1768,7 @@ def update_output_div(act,list_dep,filter_ubi,filter_ubi2,strfil,START_DATE,END_
                 text=[str(scatt['lat'][i]) + '<br>' + str(scatt['lon'][i]) + '<br>' + scatt['Municipio'][i] + '<br>' + scatt['Departamento'][i] for i in range(scatt.shape[0])],
                 marker=go.scattermapbox.Marker(
                     size=6,
-                    color='red',
+                    color='black',
                     opacity=0.7,
                     # colorscale='jet',
                 ),
@@ -1305,16 +1794,39 @@ def update_output_div(act,list_dep,filter_ubi,filter_ubi2,strfil,START_DATE,END_
 
     fig1.add_layout_image(
     dict(
-        source="assets\OAAS_cut.png",
+        #source="assets\OAAS_cut.png",
         xref="paper", yref="paper",
         x=1.1, y=-0.1,
         sizex=0.4, sizey=0.4,
         xanchor="right", yanchor="bottom"
     )
 )
-
+    for i in fig1,fig2,fig3,fig_ls[0],fig_ls[1],fig_ls[2],fig_ls[3],fig_ls[4],fig_ls[5],fig_ls[6],fig_ls[7],fig_ls[8],fig14,fig15,fig16,fig17,fig18,geo2,fig_A_Subsector,fig_ls1[4],fig_ls1[5],fig_ls1[6],fig_ls1[7],fig_ls1[8],fig_ls1[0],fig_ls1[1],fig_ls1[2],fig_ls1[3],fig_dimall_ubi,fig_dimsoc_ubi,fig_dimeco_ubi,fig_dimam_ubi:
+        i.update_layout(font_family='Nunito Sans')
+        i.add_annotation( #¡Personalizarla por tipo de grafica!
+            text="Extraido del visor de conflictos mineroenergteivos del observatorio de la OAAS. fecha (xx/xx/xx)",
+            align="left",
+            showarrow=False,
+            xref="paper",
+            yref="paper",
+            font=dict(color="black", size=9),
+            bgcolor="rgba(0,0,0,0)",
+            y=0.2,
+            x=1,
+            xanchor="left",
+        )
+        # i.add_annotation(
+        #     showarrow=False,
+        #     text=note,
+        #     font=dict(size=10), 
+        #     xref='x domain',
+        #     x=1.1,
+        #     yref='y domain',
+        #     y=-0.1
+        #     )
     #Analisis total & = or y merges np.isin
-    return fig1,fig2,fig3,fig4,fig_ls[0],fig_ls[1],fig_ls[2],fig_ls[3],fig_ls[4],fig_ls[5],fig_ls[6],fig_ls[7],fig_ls[8],fig14,fig15,fig16,fig17,fig18,geo2,fig_A_Subsector,fig_ls1[4],fig_ls1[5],fig_ls1[6],fig_ls1[7],fig_ls1[8],fig_ls1[0],fig_ls1[1],fig_ls1[2],fig_ls1[3],fig_dimall_ubi,fig_dimsoc_ubi,fig_dimeco_ubi,fig_dimam_ubi
+    loading=time.sleep(1)
+    return fig1,fig2,fig3,fig_ls[0],fig_ls[1],fig_ls[2],fig_ls[3],fig_ls[4],fig_ls[8],fig_ls[5],fig_ls[6],fig_ls[7],fig_ls[9],fig_ls[10],fig_ls[11],fig14,fig15,fig16,fig17,fig18,geo2,fig_A_Subsector,fig_ls1[4],fig_ls1[5],fig_ls1[6],fig_ls1[7],fig_ls1[8],fig_ls1[9],fig_ls1[10],fig_ls1[11],fig_ls1[0],fig_ls1[1],fig_ls1[2],fig_ls1[3],fig_dimall_ubi,fig_dimsoc_ubi,fig_dimeco_ubi,fig_dimam_ubi,fig_ls[12],fig_ls[13],fig_ls[14],fig_ls[15],fig_ls1[12],fig_ls1[13],fig_ls1[14],fig_ls1[15],loading
 
 @callback(
     [Output('tbl_confc', 'data'),
@@ -1345,11 +1857,13 @@ def display_click_data(clc):
     clc=json.dumps(clc, indent=2)
     lon=json.loads(clc)['points'][0]['lon']
     lat=json.loads(clc)['points'][0]['lat']
-    print(json.loads(clc)['points'][0]['lon'])
+    # print(json.loads(clc)['points'][0]['lon'])
     df_table=df2[((df2['latitud']==lat)&(df2['longitud']==lon))|
                 (df2['lat']==lat)&(df2['lon']==lon)]
+    df_table=df_table.replace(replace_dict)
+    df_table=df_table.replace({'<br>':'\n'})
     #Conflictos -----------------------------------------
-    confc=df_table[df_table['Inicio/Tipo_de_Reporte']=='registro_inicio']
+    confc=df_table[df_table['Inicio/Tipo_de_Reporte']=='Registro inicial Conflictividad']
     if len(confc)>0:
         confc=confc[columns_confc].sort_values(by='Inicio/Fecha_de_ocurrencia_del_evento')
         columns_renam={}
@@ -1364,7 +1878,7 @@ def display_click_data(clc):
         colconfc=[{"name": i, "id": i} for i in columns_otro]
         dconfc={'display': 'none'}
     #Alertas -----------------------------------------
-    alertas=df_table[df_table['Inicio/Tipo_de_Reporte']=='alerta_temprana']
+    alertas=df_table[df_table['Inicio/Tipo_de_Reporte']=='Registro Alerta Temprana']
     if len(alertas)>0:
         alertas=alertas[columns_alertas].sort_values(by='Inicio/Fecha_de_ocurrencia_del_evento')
         columns_renam={}
@@ -1379,7 +1893,7 @@ def display_click_data(clc):
         colalerta=[{"name": i, "id": i} for i in columns_otro]
         dalerta={'display': 'none'}
     #S.Conflictos -----------------------------------------
-    sconfc=df_table[df_table['Inicio/Tipo_de_Reporte']=='seguimiento_conflictividad']
+    sconfc=df_table[df_table['Inicio/Tipo_de_Reporte']=='Seguimiento Conflictividad']
     if len(sconfc)>0:
         sconfc=sconfc[columns_sconfc].sort_values(by='Inicio/Fecha_de_ocurrencia_del_evento')
         columns_renam={}
@@ -1394,7 +1908,7 @@ def display_click_data(clc):
         colsconfc=[{"name": i, "id": i} for i in columns_otro]
         dsconfc={'display': 'none'}
     #Cierres -----------------------------------------
-    cierr=df_table[df_table['Inicio/Tipo_de_Reporte']=='cierre']
+    cierr=df_table[df_table['Inicio/Tipo_de_Reporte']=='Cierre']
     if len(cierr)>0:    
         cierr=cierr[columns_cierr].sort_values(by='Inicio/Fecha_de_ocurrencia_del_evento')
         columns_renam={}
@@ -1409,7 +1923,7 @@ def display_click_data(clc):
         colcierr=[{"name": i, "id": i} for i in columns_otro]
         dcierr={'display': 'none'}
     #S.Alertas -----------------------------------------
-    salerta=df_table[df_table['Inicio/Tipo_de_Reporte']=='seguimiento_AT']
+    salerta=df_table[df_table['Inicio/Tipo_de_Reporte']=='Seguimiento Alerta Temprana']
     if len(salerta)>0:   
         salerta=salerta[columns_salerta].sort_values(by='Inicio/Fecha_de_ocurrencia_del_evento')
         columns_renam={}
@@ -1424,10 +1938,10 @@ def display_click_data(clc):
         colsalerta=[{"name": i, "id": i} for i in columns_otro]
         dsalerta={'display': 'none'}
     #Otros -----------------------------------------
-    otro=df_table[df_table['Inicio/Tipo_de_Reporte']=='otros_reportes_actividades']
+    otro=df_table[df_table['Inicio/Tipo_de_Reporte']=='Otros reportes/actividades']
     
     if len(otro)>0: 
-        print(otro)  
+        # print(otro)  
         otro=otro[columns_otro].sort_values(by='Inicio/Fecha_de_ocurrencia_del_evento')
         columns_renam={}
         for key,val in zip(columns_otro,columns_val_otro):
