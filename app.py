@@ -110,7 +110,7 @@ note = 'NYSE Trading Days After Announcement<br>Source:<a href="https://www.nyti
 warnings.simplefilter(action='ignore', category=FutureWarning)
 pd.options.mode.chained_assignment = None 
 
-MUN_COD=pd.read_csv('aux1\MUN_COD.txt',delimiter='\t')
+MUN_COD=pd.read_csv('aux1/MUN_COD.txt',delimiter='\t')
 
 #KoboT start
 token = '3d81f96d16fbc8adc419e90fd5e5684bc58445ff'
@@ -200,7 +200,7 @@ for i in andina:
 df2['Localizacion/zona']=dftime['Departamento'].map(dict_dep)
 df2=df2.replace(replace_dict_1)
 
-mun_loc=pd.read_csv(r'C:\Users\jujim\Documents\OAAS\aux1\mun_loc.csv',skiprows=5,delimiter=';',decimal=',')
+mun_loc=pd.read_csv('aux1/mun_loc.csv',skiprows=5,delimiter=';',decimal=',')
 dict_lat_mun={}
 dict_lon_mun={}
 cc=0
