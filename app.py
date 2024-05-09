@@ -115,7 +115,7 @@ c = datetime.now()
 warnings.simplefilter(action='ignore', category=FutureWarning)
 pd.options.mode.chained_assignment = None 
 
-MUN_COD=pd.read_csv('aux1\MUN_COD.txt',delimiter='\t')
+MUN_COD=pd.read_csv('aux1/MUN_COD.txt',delimiter='\t')
 
 #KoboT start
 token = '3d81f96d16fbc8adc419e90fd5e5684bc58445ff'
