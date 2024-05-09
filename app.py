@@ -205,7 +205,7 @@ for i in andina:
 df2['Localizacion/zona']=dftime['Departamento'].map(dict_dep)
 df2=df2.replace(replace_dict_1)
 
-mun_loc=pd.read_csv(r'C:\Users\jujim\Documents\OAAS\aux1\mun_loc.csv',skiprows=5,delimiter=';',decimal=',')
+mun_loc=pd.read_csv('aux1\mun_loc.csv',skiprows=5,delimiter=';',decimal=',')
 dict_lat_mun={}
 dict_lon_mun={}
 cc=0
@@ -439,6 +439,7 @@ def bar_all(filter_ubi2,df21,filter_ubi,column,i,namee):
         
 
 app = Dash(__name__)
+server = app.server
 
 #app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
