@@ -87,7 +87,7 @@
     }
     .quest.button{
       border-radius: 50%;
-      background-color: #4cb286;
+      background-color: #DDD0B4;
       color: white;
       margin-top: 0%;
       box-sizing: content-box;
@@ -141,8 +141,8 @@
     .btn {
     font-family: 'Poppins';
     font-size:12px;
-    background-color: #4cb286;
-    color: #fff
+    background-color: #DDD0B4;
+    color: black
     }
     .one-third.column {
       width: 30.6666666667%;
