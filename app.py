@@ -115,7 +115,7 @@ c = datetime.now()
 warnings.simplefilter(action='ignore', category=FutureWarning)
 pd.options.mode.chained_assignment = None 
 
-MUN_COD=pd.read_csv('aux1/MUN_COD.txt',delimiter='\t')
+MUN_COD=pd.read_csv('aux1\MUN_COD.txt',delimiter='\t')
 
 #KoboT start
 token = '3d81f96d16fbc8adc419e90fd5e5684bc58445ff'
@@ -556,15 +556,29 @@ card_main=html.Div([
         style={'color': 'black'}
     ),
             html.Br(),
-            html.Button('¡Actualizar!', id='submit-val', n_clicks=0,style={'background-color': 'white',}),
+            html.Button('¡Actualizar!', id='submit-val', n_clicks=0,style={
+                'background-color': '#FF9000',
+                "color": "white",
+                'marginLeft': '5%', 
+                'width': 'auto', 
+                'height': '8%',
+                "fontSize": "1.5em",
+                'font-family':'Nunito Sans',}),
                     #  dbc.CardImg(src="assets\logos.png", bottom=True, alt='Logos_convenio_tripartito',) 
-    dcc.Markdown('''
-        * Seleccione los filtros que desea.
-    ''',id='estado_filtro',style={'color': 'red', 'background-color': 'orange'}),
+    html.Div(
+    [html.H2('* Seleccione los filtros que desea.')],
+    id='estado_filtro',
+    style={'color': 'red', 
+            'background-color': 'orange',
+            "fontSize": "1.4em",
+            'textAlign': 'center'}),
     dcc.Markdown(f'''
         * ¡Bienvenido al visor de conflictos mineroenergeticos!
         * Citese como: Observatorio de la Oficina de Asuntos Ambientales y Sociales. Ministerio de Minas y Energía. (s.f.). Visor de conflictos mineroenergeticos. Recuperado {datetime.today().strftime('%Y-%m-%d')}, de https://oaas_confc.com
-    '''),], 
+    ''',
+    style={
+        "fontSize": "1.2em",
+        'font-family':'Nunito Sans',}),], 
             
         className="sidebar",
         id='sidebar')
@@ -810,7 +824,7 @@ app.layout = html.Div(children=[
 
             [    
                 html.Img(
-                    src="assets\gobierno.png",
+                    src="assets\gobierno_1.png",
                     id="plotly-image",
                     className="logo-vida"
                 ),                   
@@ -827,7 +841,7 @@ app.layout = html.Div(children=[
 
                     "Observatorio de la Oficina de Asuntos Ambientales y Sociales",
                     style={'color':'black'},
-                    
+                    className="model-title"
 
                     # style={"margin-bottom": "0px", 'textAlign': 'center','font-weight':'bold'},
                 )
@@ -1416,7 +1430,7 @@ app.callback(
     Output(component_id='figminalbar', component_property='figure'),
     Output(component_id='figengalbar', component_property='figure'),
     Output(component_id='figescalbar', component_property='figure'),
-    Output(component_id="loading-output-1", component_property='children'),
+    Output(component_id="loading-output-1",component_property='children'),
     Output(component_id="estado_filtro", component_property='children'),
     
      ],
@@ -1427,7 +1441,8 @@ app.callback(
      State(component_id='subsector_id', component_property='value'),
      State(component_id='time_id', component_property='value'),
      State(component_id='DATE', component_property='start_date'),
-     State(component_id='DATE', component_property='end_date'),]
+     State(component_id='DATE', component_property='end_date'),],
+    prevent_initial_call='initial_duplicate'
 )
 def update_output_div(act,list_dep,list_ger,filter_ubi,subsector_filt,strfil,START_DATE,END_DATE):
     filter_ubi2='Ninguno'
@@ -1455,6 +1470,50 @@ def update_output_div(act,list_dep,list_ger,filter_ubi,subsector_filt,strfil,STA
                 dep_fil=[LOC[dpt] for dpt in list_dep]
             df21=df2[np.isin(df2['Departamento'],dep_fil)]
             i='departamentos y municipios de consulta'
+            if len (df21) == 0 :
+                last_word=[html.Img(
+
+                            src="assets/excl.png",
+
+                            style={
+
+                                "height": "auto",
+                                #"max-width": "750x",
+                                "margin-top": "5px",
+                                "display":"block",
+                                'textAlign': 'center',
+                                "margin-left": "15%",
+                                "width": "35%",
+                                # "margin-bottom": "5px",
+
+                            },
+
+                        ),
+                            dcc.Markdown('''
+                                         NO SE ENCUENTRA REGISTROS PARA SU SELECCIÓN. POR FAVOR MODIFIQUE **DEPARTAMENTO O GERENCIAS**.
+                                         ''')]#'<img src="assets/excl.png" width="200" height="100"><br>  .'
+            else:
+                last_word=[html.Img(
+
+                            src="assets/excl.png",
+
+                            style={
+
+                                "height": "auto",
+                                #"max-width": "750x",
+                                "margin-top": "5px",
+                                "display":"block",
+                                'textAlign': 'center',
+                                "margin-left": "15%",
+                                "width": "35%",
+                                # "margin-bottom": "5px",
+
+                            },
+
+                        ),
+                            dcc.Markdown('''
+                                         * NO SE ENCUENTRA REGISTROS PARA SU SELECCIÓN. POR FAVOR MODIFIQUE **SUBSECTOR** .
+                                         ''')]
         else:
             # dep_fil=[LOC[dpt] for dpt in list_dep]
             df21=df2[np.isin(df2['Localizacion/zona'],list_ger)]
@@ -1477,10 +1536,6 @@ def update_output_div(act,list_dep,list_ger,filter_ubi,subsector_filt,strfil,STA
                 ]
     df21=df21[(df21['FECHA - HORA UTC']<=END_DATE)&(df21['FECHA - HORA UTC']>=START_DATE)]
     if len(df21)==0:
-        
-        last_word='''
-        * No se encuentra registros para su selección. Por favor modifique.
-    '''
         fig=px.scatter()
         fig.update_layout(template=draft_nodata)
         [fig1,fig2,fig3,fig14,fig15,fig16,fig17,fig18,geo2,fig_A_Subsector,fig_dimall_ubi,fig_dimsoc_ubi,fig_dimeco_ubi,fig_dimam_ubi]=[[fig]*14][0]
@@ -1962,7 +2017,8 @@ def update_output_div(act,list_dep,list_ger,filter_ubi,subsector_filt,strfil,STA
      #Otros
      Output('tbl_otro', 'data'),
      Output('tbl_otro', 'columns'),
-     Output('otro_block', 'style')],
+     Output('otro_block', 'style'),
+     ],
     [Input('geo2', 'clickData')])
 def display_click_data(clc):
     clc=json.dumps(clc, indent=2)
@@ -2092,7 +2148,7 @@ def display_click_data(clc):
         colotro=[{"name": i, "id": i} for i in columns_otro]
         dotro={'display': 'none'}
     # Fin condicionales
-    return dtconfc,colconfc,dconfc,dtalerta,colalerta,dalerta,dtsconfc,colsconfc,dsconfc,dtsalerta,colsalerta,dsalerta,dtcierr,colcierr,dcierr,dtotro,colotro,dotro,
+    return dtconfc,colconfc,dconfc,dtalerta,colalerta,dalerta,dtsconfc,colsconfc,dsconfc,dtsalerta,colsalerta,dsalerta,dtcierr,colcierr,dcierr,dtotro,colotro,dotro
 
 if __name__ == '__main__':
     app.run(debug=True)
