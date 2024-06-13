@@ -398,6 +398,59 @@ a{
     margin-top:0%;
     height: 80%;
   }
+  #maptable {
+    flex-direction: column;
+    justify-content: start; 
+    margin-top:0%;
+    height: 80%;
+  }
+  .model_graph  {
+    width: 100%;
+    justify-content: start; 
+    margin-left: 0%;
+    /* margin-left: 20%; */
+    /* z-index: 1; */
+    /* transition: margin-left .5s; */
+    overflow: auto;
+    height: 100%;
+  }
+  .model_table  {
+    width: 90%;
+    /* margin-left: 4rem; */
+    margin-top: 5%;
+    z-index: 1;
+    /* transition: margin-left .5s; */
+    overflow: auto;
+    height: 100%;
+    /* padding: 0.5rem 0.2rem; */
+    /* height: 100%; */
+  }
+  .two_fig{
+
+    position: relative;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    margin-top: 10%;
+    transition: all 0.5s;
+    padding: 0.2rem 0.2rem;
+    margin-left: 0.5rem;
+    height: 32rem;
+  }
+
+.two_fig_2{
+/*width: 100% -10rem;*/
+position: relative;
+width: 100%;
+z-index: 1;
+margin-top: 20%;
+margin-left: 0%;
+
+padding: 0rem 0rem;
+transition: 0;
+overflow: auto;
+}
   .logo-vida {
     margin: 0 auto;
     margin-top: 0%;

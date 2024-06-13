@@ -880,9 +880,6 @@ app.layout = html.Div(children=[
                             'prop_name':'Cargando...',
                             'is_loading':True}),
                 card_main,
-            
-                
-
                 html.Div(
                     [
                         html.Br(),
@@ -895,10 +892,12 @@ app.layout = html.Div(children=[
             ],
             # justify="start",
 
-            ),html.Div(tables,className="model_table column",style={ "overflow": "scroll"}),
+            ),html.Div(tables,
+                       className="model_table column",
+                       style={ "overflow": "scroll"}),
 
 
-            ], className="row flex-display",
+            ], className="maptable flex-display",
             id = 'div_slider'
         ),
     # card_main,
@@ -934,7 +933,7 @@ app.layout = html.Div(children=[
             figure={},
             
         )],className='two_fig_2')]
-             ,className='row flex-display'),
+             ,className='row column flex-display'),
 #Segmento Mineria
     html.Div([
         html.Div([
@@ -1746,7 +1745,7 @@ def update_output_div(act,list_dep,list_ger,filter_ubi,subsector_filt,strfil,STA
                                             line_width=0.75,))
                     # #print(len(nc))
             fig14.update_layout(autosize=True,height=500,
-                                margin=dict(l=250, r=250, b=0, t=30),
+                                # margin=dict(l=250, r=250, b=0, t=30),
                                 font_family='Nunito Sans'
                             )
             fig14.update_yaxes(tickformat="~m") 
