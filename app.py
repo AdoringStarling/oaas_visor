@@ -2053,7 +2053,7 @@ def display_click_data(clc):
             #     except:
             #         pass
             # text_column=''
-
+    df_table=df_table.replace('<br>','\n')
     #Conflictos -----------------------------------------
     confc=df_table[df_table['Inicio/Tipo_de_Reporte']=='Registro inicial Conflictividad']
     if len(confc)>0:
