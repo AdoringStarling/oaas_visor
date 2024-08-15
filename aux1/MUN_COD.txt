@@ -1069,48 +1069,48 @@ Tolima 	73854 	VALLE DE SAN JUAN
 Tolima 	73861 	VENADILLO
 Tolima 	73870 	VILLAHERMOSA
 Tolima 	73873 	VILLARRICA
-Valle 	76001 	CALI
-Valle 	76020 	ALCALÁ
-Valle 	76036 	ANDALUCÍA
-Valle 	76041 	ANSERMANUEVO
-Valle 	76054 	ARGELIA
-Valle 	76100 	BOLÍVAR
-Valle 	76109 	BUENAVENTURA
-Valle 	76111 	GUADALAJARA DE BUGA
-Valle 	76113 	BUGALAGRANDE
-Valle 	76122 	CAICEDONIA
-Valle 	76126 	CALIMA
-Valle 	76130 	CANDELARIA
-Valle 	76147 	CARTAGO
-Valle 	76233 	DAGUA
-Valle 	76243 	EL ÁGUILA
-Valle 	76246 	EL CAIRO
-Valle 	76248 	EL CERRITO
-Valle 	76250 	EL DOVIO
-Valle 	76275 	FLORIDA
-Valle 	76306 	GINEBRA
-Valle 	76318 	GUACARÍ
-Valle 	76364 	JAMUNDÍ
-Valle 	76377 	LA CUMBRE
-Valle 	76400 	LA UNIÓN
-Valle 	76403 	LA VICTORIA
-Valle 	76497 	OBANDO
-Valle 	76520 	PALMIRA
-Valle 	76563 	PRADERA
-Valle 	76606 	RESTREPO
-Valle 	76616 	RIOFRÍO
-Valle 	76622 	ROLDANILLO
-Valle 	76670 	SAN PEDRO
-Valle 	76736 	SEVILLA
-Valle 	76823 	TORO
-Valle 	76828 	TRUJILLO
-Valle 	76834 	TULUÁ
-Valle 	76845 	ULLOA
-Valle 	76863 	VERSALLES
-Valle 	76869 	VIJES
-Valle 	76890 	YOTOCO
-Valle 	76892 	YUMBO
-Valle 	76895 	ZARZAL
+Valle del Cauca 	76001 	CALI
+Valle del Cauca 	76020 	ALCALÁ
+Valle del Cauca 	76036 	ANDALUCÍA
+Valle del Cauca 	76041 	ANSERMANUEVO
+Valle del Cauca 	76054 	ARGELIA
+Valle del Cauca 	76100 	BOLÍVAR
+Valle del Cauca 	76109 	BUENAVENTURA
+Valle del Cauca 	76111 	GUADALAJARA DE BUGA
+Valle del Cauca 	76113 	BUGALAGRANDE
+Valle del Cauca 	76122 	CAICEDONIA
+Valle del Cauca 	76126 	CALIMA
+Valle del Cauca 	76130 	CANDELARIA
+Valle del Cauca 	76147 	CARTAGO
+Valle del Cauca 	76233 	DAGUA
+Valle del Cauca 	76243 	EL ÁGUILA
+Valle del Cauca 	76246 	EL CAIRO
+Valle del Cauca 	76248 	EL CERRITO
+Valle del Cauca 	76250 	EL DOVIO
+Valle del Cauca 	76275 	FLORIDA
+Valle del Cauca 	76306 	GINEBRA
+Valle del Cauca 	76318 	GUACARÍ
+Valle del Cauca 	76364 	JAMUNDÍ
+Valle del Cauca 	76377 	LA CUMBRE
+Valle del Cauca 	76400 	LA UNIÓN
+Valle del Cauca 	76403 	LA VICTORIA
+Valle del Cauca 	76497 	OBANDO
+Valle del Cauca 	76520 	PALMIRA
+Valle del Cauca 	76563 	PRADERA
+Valle del Cauca 	76606 	RESTREPO
+Valle del Cauca 	76616 	RIOFRÍO
+Valle del Cauca 	76622 	ROLDANILLO
+Valle del Cauca 	76670 	SAN PEDRO
+Valle del Cauca 	76736 	SEVILLA
+Valle del Cauca 	76823 	TORO
+Valle del Cauca 	76828 	TRUJILLO
+Valle del Cauca 	76834 	TULUÁ
+Valle del Cauca 	76845 	ULLOA
+Valle del Cauca 	76863 	VERSALLES
+Valle del Cauca 	76869 	VIJES
+Valle del Cauca 	76890 	YOTOCO
+Valle del Cauca 	76892 	YUMBO
+Valle del Cauca 	76895 	ZARZAL
 Vaupes 	97001 	MITÚ
 Vaupes 	97161 	CARURU
 Vaupes 	97511 	PACOA
